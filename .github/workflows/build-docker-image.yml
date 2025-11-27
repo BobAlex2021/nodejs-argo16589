@@ -21,6 +21,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        
+      - name: 生成小写仓库名   # ← 新增
+        id: repo              # ← 新增
+        run: echo "repo=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"  # ← 新增
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -39,7 +43,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/${{ github.repository_owner }}/adwhry:9983
+            ghcr.io/${{ steps.repo.outputs.repo }}/adwhry:9983
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.description=HTTP Server
